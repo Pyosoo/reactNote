@@ -80,3 +80,68 @@ class App extends React.Component {
 이렇게 class에서 contextType을 지정해주고 사용할 수 있다.   
 하지만! **이런식의 사용은 하나의 콘텍스트만 연결할 수 있다는 단점이 있다.**     
 
+
+이 외에 고차 컨텍스트API 중첩, 하위컴포넌트에서 콘텍스트 데이터 수정이 있다.. 이는 실제 사용 사례가 생기면 추가하겠다.   
+
+
+### ★ContextAPI 사용지 주의할 점
+
+1.  불필요한 렌더링이 발생하는 경우   (잘 이해가 되지 않는다....)
+```
+const UserContext = React.createContext({ name : 'unknown' });
+
+class App extends React.Component{
+  // ...
+  onChangeName = e => {
+    const name = e.target.value;
+    this.setState({ name });
+  };
+  render(){
+    const {name} = this.state;
+    return(
+      <div>
+        <UserContext.Provider value={( name })>     …①
+          {/*...*/}
+        </UserContext.Provider>
+      </div>
+    );
+  }
+}
+```
+① 콘텍스트 데이터로 객체를 전달하고 있다. 이처럼 작성하면 render 메서드가 호출될 때마다 새로운 객체가 생성된다.    
+따라서 name이 변경되지 않아도 render메서드가 호출될때마다 하위의 Consumer 컴포넌트도 다시 렌더링 된다. 
+    
+콘텍스트 데이터 전체를 컴포넌트의 상탯값으로 관리하면서, 해결한 코드↓  
+```
+class App extends React.Component{
+  state = {
+    userContextValue: {
+      name: 'unknown',
+    },
+  }
+  onChangeName = e => {
+    const name = e.target.value;
+    this.setState({ userContextValue: {name} });
+  };
+  render(){
+    const {userContextValue} = this.state;
+    return(
+      <div>
+        <UserContext.Provider value={( userContextValue })>     
+          {/*...*/}
+        </UserContext.Provider>
+      </div>
+    );
+  }
+}
+```
+
+2.  Provider를 못찾는 경우   
+COnsumer 컴포넌트와 Provider 컴포넌트를 적절한 위치에서 사용하지 않으면 데이터가 전달되지 않는다.
+```
+<UserContext.Provider value="A">
+  {/* ... */}
+</UserContext.Provider>
+<Profile />
+```
+이 상황에서 Profile에서 사용된 Consumer는 Provider를 못찾고 기본 값을 사용하게 된다.(unknown)   
