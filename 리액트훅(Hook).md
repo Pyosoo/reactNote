@@ -13,7 +13,7 @@
 코드 압축이 잘 안되는 경우, 핫 리로드에서 난해한 버그 발생하는 경우, 컴파일 단계에서 코드를 최적화하기 어려운 경우 를 해결 한다.   
 
 
-### ■ 훅의 장점
+■ 훅의 장점
 1.  재사용 가능한 로직은 쉽게 만들 수 있다.   
   => 훅이 단순한 함수이므로 함수안에서 다른 함수를 호출하는 것으로 새로운 훅을 만들 수 있기 때문이다.    
 2.  같은 로직을 한곳으로 모을 수 있어 가독성이 좋다.    
@@ -21,7 +21,7 @@
   => 고차 컴포넌트의 타입 정의와 비교되는 부분이다.    
   
 
-# ■ 훅의 기능들
+## ■ 훅의 기능들
 - - -
 **① 상탯값 추가하기 useState**    
 ```
@@ -98,3 +98,44 @@ function widthPrinter(){
   return <div>{`width is ${width}`}</div>                 //언마운트될때 반환된 함수가 실행된다.
 }
 ```
+
+★ 커스텀 훅 사용하기   
+리액트 훅은 커스텀 훅을 만들어 사용할 수 있는 장점이 있다.   
+이는 고차 컴포넌트와 렌더 속성값 패턴처럼 재사용이 가능하다는 것이다.   
+```
+//커스텀 훅 만들기
+import React, {useEffect, useState} from 'react';
+function useWindowWidth(){
+  const [width, setWidth] = useState(window.innerWitdh);
+  useEffect( () => {
+    const onResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
+  return width;
+}
+
+//사용하기
+import React, {useEffect, useState} from 'react';
+import {useWindowWidth} from './hooks';
+
+function Profile() {
+  const width = useWindowWidth();
+  return (
+    <div>
+      {width}
+    </div>
+  );
+}
+```
+
+
+# ※훅 사용시 지켜야 할 것들
+- - -
+● 하나의 컴포넌트에서 훅을 호출하는 순서는 항상 같아야 한다.   
+  => 조건문을 통한 훅 호출은 순서를 보장하지 못한다.   
+  => 반복문 안에서 훅 호출은 순서를 보장하지 못한다.   
+  => 일반함수 안에서의 호출은 언제 호출될지 모르기 때문에 순서가 보장되지 않는다.   
+● 훅은 함수형 컴포넌트 또는 커스텀 훅 안에서만 호출되어야 한다.   
