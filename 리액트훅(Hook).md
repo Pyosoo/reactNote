@@ -132,6 +132,56 @@ function Profile() {
 ```
 
 
+
+**③ Consumer 없이 콘텍스트 사용하기: useContext**   
+useContext 훅을 이용하면 consumer 컴포넡느 없이 부모 컴포넌트로부터 전달된 콘텍스트 데이터를 사용할 수 있다.   
+```
+function Parent(){
+  return(
+    <UserContext.Provider value={user}>
+      <Child />
+    </UserContext.Provider>
+  );
+}
+
+function Child(){
+  const user = useContext(UserContext);
+  consoel.log(user);
+}
+```
+
+
+**④ 함수형 컴포넌트에서 돔 요소 접근하기: useRef**    
+클래스형 컴포넌트에서 createRef 함수를 통해서 돔 요소에 접근했다면,   
+함수형 컴포넌트에서는 useRef 훅을 통해서 돔 요소에 접근할 수 있다.   
+```
+import React, {useRef} from 'react';
+
+function App(){
+  const inputEl = userRef(null);
+  const onClick = () => {
+    if(inputEl.current){
+      inputEl.current.focus();
+    }
+  };
+  return(
+    <div>
+      <input ref={inputEl} type-"text" />
+      <button onClick={onClick}> Focus the text </button>
+    </div>
+  );
+}
+```
+```
+
+**⑤ 그 외...**
+-메모제이션 훅: useMemo, useCallback   
+
+
+-컴포넌트의 상탯값을 리덕스처럼 관리하기: useReducer
+
+
+
 # ※훅 사용시 지켜야 할 것들
 - - -
 ● 하나의 컴포넌트에서 훅을 호출하는 순서는 항상 같아야 한다.   
