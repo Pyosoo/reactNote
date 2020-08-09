@@ -7,8 +7,8 @@
 
 우선 ContextAPI는 세가지? 과정을 거치는 것 같다.    
 1.  선언 ```ex)const UserContext = React.createContext('defalutValue');```    
-2.  Provider  ```<UserContext.Provider value="Value"> //... </UserContext.Provider>    
-3.  Consumer  ```<UserContext.Consumer> //데이터 사용.. </UserContext.Consumer>   
+2.  Provider  ```<UserContext.Provider value="Value"> //... </UserContext.Provider>   ``` 
+3.  Consumer  ```<UserContext.Consumer> //데이터 사용.. </UserContext.Consumer>   ```
 
 먼저 맨위에 선언문을 보면 구조는 다음과 같다.   
 React.createContext(defaultValue) => {Provider, Consumer} 
